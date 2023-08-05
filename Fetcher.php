@@ -16,7 +16,6 @@ use voku\helper\SimpleHtmlDomInterface;
 use ItIsAllMail\CoreTypes\Source;
 use ItIsAllMail\Config\FetcherSourceConfig;
 
-
 class AvitoFetcherDriver extends AbstractFetcherDriver implements FetchDriverInterface
 {
     protected string $driverCode = "avito.ru";
@@ -69,7 +68,7 @@ class AvitoFetcherDriver extends AbstractFetcherDriver implements FetchDriverInt
             $body = $node->findOne('meta[itemprop="description"]')->getAttribute('content');
 
             $subject = $body;
-            
+
             $price = $node->findOneOrFalse('meta[itemprop="price"]');
             if ($price) {
                 $subject = '[' .  sprintf("%04d", intval($price->getAttribute('content'))) . '] ' . $subject;
@@ -101,14 +100,15 @@ class AvitoFetcherDriver extends AbstractFetcherDriver implements FetchDriverInt
             if (! $this->messageWithGivenIdAlreadyDownloaded($postId . "@" . $this->getCode())) {
                 $this->processPostAttachements($node, $msg, $sourceConfig);
             }
-            
+
             $posts[] = $msg;
         }
-    
+
         return $posts;
     }
 
-    protected function findCSSClass(string $html, string $prefix) : string {
+    protected function findCSSClass(string $html, string $prefix): string
+    {
         $pos1 = strpos($html, $prefix . "-");
 
         $pos2 = strpos($html, ' ', $pos1);
@@ -141,11 +141,10 @@ class AvitoFetcherDriver extends AbstractFetcherDriver implements FetchDriverInt
 
             $msg->addAttachement(
                 "image.jpg",
-                CurlImpersonatedBrowser::getAsString($image,[], $sourceConfig->getOpt('curl_impersonated_bin')),
+                CurlImpersonatedBrowser::getAsString($image, [], $sourceConfig->getOpt('curl_impersonated_bin')),
                 TYPEIMAGE,
                 'jpeg'
             );
         }
     }
-
 }
